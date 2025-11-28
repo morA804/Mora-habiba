@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name=" viewport" content="width=device-width, initial-scale=1.0">
+    <title>حبيبة حياتي 💖</title>
+    <style>
+        /* الخطوط */
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap');
+
+        /* إعدادات الجسم العامة والخلفية المشعة */
+        body {
+            font-family: 'Cairo', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #ffc0cb 0%, #ff69b4 100%);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            overflow-x: hidden;
+            color: #333;
+            perspective: 1000px;
+        }
+
+        /* حاوية المشاهد */
+        .scene {
+            width: 100%;
+            max-width: 450px;
+            padding: 20px 15px;
+            box-sizing: border-box;
+            text-align: center;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* قلوب 3D في الخلفية */
+        .heart-3d-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .heart-3d {
+            position: absolute;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 30px;
+            transform: rotateX(60deg) rotateY(0deg);
+            text-shadow: 0 0 10px rgba(255, 192, 203, 0.8);
+            animation: float-3d 15s infinite ease-in-out, pulse 3s infinite alternate;
+        }
+
+        @keyframes float-3d {
+            0% { top: 100%; left: 10%; transform: translateZ(0) rotateX(0deg) rotateY(0deg); }
+            50% { top: 0%; left: 90%; transform: translateZ(100px) rotateX(180deg) rotateY(90deg); }
+            100% { top: -20%; left: 30%; transform: translateZ(0) rotateX(360deg) rotateY(180deg); }
+        }
+        @keyframes pulse {
+            to { opacity: 0.8; transform: scale(1.2); }
+        }
+
+        .heart-3d:nth-child(2) { left: 40%; top: 80%; font-size: 40px; animation-delay: 3s; }
+        .heart-3d:nth-child(3) { left: 70%; top: 60%; font-size: 25px; animation-delay: 6s; }
+        .heart-3d:nth-child(4) { left: 20%; top: 40%; font-size: 35px; animation-delay: 9s; }
+        .heart-3d:nth-child(5) { left: 85%; top: 20%; font-size: 50px; animation-delay: 12s; }
+
+        /* الشاشات */
+        .screen {
+            display: none;
+            padding-top: 50px;
+            animation: slideInFromTop 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            opacity: 0;
+            min-height: 80vh;
+        }
+        .screen.active {
+            display: block;
+            opacity: 1;
+        }
+        
+        @keyframes slideInFromTop {
+            0% { transform: translateY(-100px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+
+        /* العناصر المشتركة */
+        h1, h2 {
+            color: #fff;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.8), 0 0 25px rgba(255, 105, 180, 0.9);
+            font-weight: 900;
+        }
+
+        /* كرت الذاكرة – الآن الصورة تملأ الغلاف بالكامل */
+        .memory-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.05) 100%);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 105, 180, 0.4);
+            border-radius: 24px;
+            padding: 0;
+            margin-bottom: 35px;
+            box-shadow: 0 8px 25px rgba(255, 105, 180, 0.3);
+            overflow: hidden;
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            animation: floatUp 0.8s forwards;
+            opacity: 0;
+            transform: translateY(50px);
+            position: relative;
+            height: 280px; /* ارتفاع ثابت لتوحيد الحجم */
+        }
+
+        .memory-card::before {
+            content: "💖";
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            font-size: 20px;
+            opacity: 0.2;
+            animation: pulse 4s infinite alternate;
+            z-index: 2;
+        }
+
+        .memory-card::after {
+            content: "✨";
+            position: absolute;
+            bottom: 12px;
+            right: 12px;
+            font-size: 18px;
+            opacity: 0.15;
+            animation: pulse 5s infinite alternate-reverse;
+            z-index: 2;
+        }
+
+        .memory-card:hover {
+            transform: translateY(-6px) scale(1.02);
+            box-shadow: 0 12px 35px rgba(255, 105, 180, 0.5);
+        }
+
+        @keyframes floatUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .memory-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* ← هذا يجعل الصورة تملأ الغلاف بالكامل مع الحفاظ على النسبة */
+            display: block;
+            border-radius: 22px;
+            filter: brightness(1.05);
+        }
+
+        .memory-card .caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.4);
+            color: white;
+            font-weight: 800;
+            font-size: 19px;
+            padding: 12px 0;
+            margin: 0;
+            z-index: 3;
+            text-shadow: 0 0 6px #ff4d94;
+            backdrop-filter: blur(4px);
+        }
+
+        /* باقي الأنماط */
+        .lock-screen {
+            padding-top: 15vh;
+        }
+        .lock-screen h2 { margin-bottom: 30px; font-size: 28px; }
+        .lock-screen .password-input {
+            width: 80%;
+            padding: 15px;
+            margin-bottom: 25px;
+            border: 3px solid #ff4d94;
+            border-radius: 50px;
+            text-align: center;
+            font-size: 22px;
+            letter-spacing: 5px;
+            color: #333;
+            outline: none;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 0 10px rgba(255, 105, 180, 0.5);
+            transition: all 0.3s;
+        }
+        .lock-screen .password-input:focus {
+            border-color: #f72c7b;
+            box-shadow: 0 0 20px rgba(255, 105, 180, 1);
+        }
+        .lock-screen .lock-icon { font-size: 60px; color: #fff; text-shadow: 0 0 10px #f72c7b; }
+
+        .button {
+            display: inline-block;
+            padding: 18px 40px;
+            background-color: #ff4d94;
+            color: white;
+            border: none;
+            border-radius: 40px;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.1s ease;
+            box-shadow: 0 8px #d93a7d, 0 15px 30px rgba(255, 77, 148, 0.8);
+            font-weight: 700;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+            min-width: 180px;
+        }
+        .button:active {
+            box-shadow: 0 3px #d93a7d, 0 5px 15px rgba(255, 77, 148, 0.7);
+            transform: translateY(5px);
+        }
+        .start-journey-button {
+            font-family: 'Arial', sans-serif;
+            letter-spacing: 1px;
+        }
+
+        #error-message {
+            color: #ffc0cb;
+            margin-top: 15px;
+            font-weight: bold;
+            text-shadow: 0 0 5px red;
+            display: none;
+            animation: shake 0.5s;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-10px); }
+            40%, 80% { transform: translateX(10px); }
+        }
+
+        .welcome-screen h1 { margin-bottom: 25px; font-size: 38px; }
+        .welcome-screen p {
+            color: #555;
+            line-height: 2;
+            font-size: 17px;
+            font-weight: 500;
+        }
+        .welcome-screen .next-step-text {
+            font-weight: bold;
+            color: #f72c7b;
+            margin-top: 20px;
+        }
+
+        .memories-screen { padding-top: 30px; }
+        .memories-screen h1 { margin-bottom: 30px; font-size: 40px; }
+
+        .secret-message-text {
+            font-size: 22px;
+            font-weight: bold;
+            color: #fff;
+            margin: 40px 0 30px;
+            text-shadow: 0 0 10px #fff, 0 0 20px #ff4d94;
+        }
+
+        .final-screen h1 { font-size: 45px; margin-bottom: 5px; }
+        .final-screen .sub-title {
+            color: #fff;
+            text-shadow: 0 0 5px #fff;
+            font-size: 24px;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+        .final-screen p {
+            color: #333;
+            line-height: 2.2;
+            font-size: 18px;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .final-screen .text-content {
+            background-color: rgba(255, 255, 255, 0.98);
+            padding: 30px 20px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(5px);
+            margin-bottom: 30px;
+        }
+
+        .restart-button {
+            background-color: #fce4ec;
+            color: #f72c7b;
+            font-weight: 900;
+            font-family: Arial, sans-serif;
+            text-shadow: none;
+            border: 3px solid #f72c7b;
+            box-shadow: 0 8px #ff69b4, 0 15px 30px rgba(255, 105, 180, 0.8);
+            margin-top: 25px;
+        }
+        .restart-button:hover {
+            background-color: #ff69b4;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px #d93a7d, 0 15px 30px rgba(255, 105, 180, 0.9);
+        }
+        .restart-button:active {
+            box-shadow: 0 3px #d93a7d, 0 5px 15px rgba(255, 77, 148, 0.7);
+            transform: translateY(5px);
+        }
+    </style>
+</head>
+<body>
+
+<!-- موسيقى رومانسية ناعمة (رابط مباشر ويعمل فور التفاعل) -->
+<audio id="background-music" loop>
+    <source src="https://www.soundjay.com/misc/sounds/romantic-piano-1.mp3" type="audio/mpeg">
+    المتصفح لا يدعم تشغيل ملفات الصوت.
+</audio>
+
+<div class="heart-3d-bg">
+    <span class="heart-3d">💖</span>
+    <span class="heart-3d">✨</span>
+    <span class="heart-3d">🤍</span>
+    <span class="heart-3d">💖</span>
+    <span class="heart-3d">✨</span>
+</div>
+
+<div class="scene">
+    <div id="lock-screen" class="screen active lock-screen">
+        <span class="lock-icon">🔒</span>
+        <h2 style="font-family: Arial, sans-serif;">Enter Password<br>Unlock</h2>
+        <input type="password" id="password-input" class="password-input" placeholder="Password" maxlength="6">
+        <button class="button" onclick="checkPassword()">دخول ❤</button>
+        <div id="error-message">كلمة المرور غير صحيحة!</div>
+    </div>
+
+    <div id="welcome-screen" class="screen welcome-screen">
+        <h1>حبيبة حياتي💗</h1>
+        <div class="text-content">
+            <p>
+                انتي مش شبه حد، انتي شبه الحاجات اللي كنت بدعي ربنا يرزقني بيها من زمان.
+                كل ما عيني تقابل عينك بحس إن قلبي لقى المكان اللي يرتاح فيه.<br>
+                بحب طباعك وضحكتك وزعلك وطريقتك في الكلام… بحبك بكل تفاصيلك.<br>
+                وجودك في حياتي خلاني أحب الدنيا شوية، عشان فيها انتي.<br>
+                ولو خيروني بين كل العالم وبينك، هاختارك انتي كل مرة من غير ما أفكر. 💗✨
+            </p>
+        </div>
+        <p class="next-step-text">تعالي نشوف كام ميموري كده مع بعض</p>
+        <button class="button start-journey-button" onclick="showMemoriesScreen()">
+            <span style="font-family: Arial, sans-serif;">✨ Start Journey ✨</span>
+        </button>
+    </div>
+
+    <div id="memories-screen" class="screen memories-screen">
+        <h1>Memories</h1>
+
+        <div class="memory-card" style="animation-delay: 0.1s;">
+            <img src="https://i.postimg.cc/WpdTJFC5/maxresdefault.jpg" alt="Memory 1">
+            <p class="caption">الاغنيه اللي بحبها 💖</p>
+        </div>
+
+        <div class="memory-card" style="animation-delay: 0.2s;">
+            <img src="https://i.postimg.cc/HL89ytwh/20251115145848338.jpg" alt="Memory 2">
+            <p class="caption">يوم مش هنساه💗</p>
+        </div>
+
+        <div class="memory-card" style="animation-delay: 0.3s;">
+            <img src="https://i.postimg.cc/Y9pjHrCz/20251115145900343.jpg" alt="Memory 3">
+            <p class="caption">كان يوم تحفه ✨</p>
+        </div>
+
+        <div class="memory-card" style="animation-delay: 0.4s;">
+            <img src="https://i.postimg.cc/g0cn9cjm/20251115145858055.jpg" alt="Memory 4">
+            <p class="caption">كان يوم تحفه💗</p>
+        </div>
+
+        <div class="memory-card" style="animation-delay: 0.5s;">
+            <img src="https://i.postimg.cc/qqHrTQw7/20251115145910377.jpg" alt="Memory 5">
+            <p class="caption">نور عيني ✨💖</p>
+        </div>
+
+        <div class="memory-card" style="animation-delay: 0.6s;">
+            <img src="https://i.postimg.cc/PxmcmHWg/20251112143006051.jpg" alt="Memory 6">
+            <p class="caption">فاكره اليوم ده 💖</p>
+        </div>
+
+        <div class="memory-card" style="animation-delay: 0.7s;">
+            <img src="https://i.postimg.cc/VkrKq1mz/1764026340134.jpg" alt="Memory 7">
+            <p class="caption">💗💗</p>
+        </div>
+
+        <div class="secret-message-text">✨ في حاجه مهمه عايز اقولهالك ✨</div>
+        <button class="button" onclick="showFinalScreen()">💗 دوسي هنا يروحي 💗</button>
+        <div style="height: 50px;"></div>
+    </div>
+
+    <div id="final-screen" class="screen final-screen">
+        <h1>حبيبة أيامي</h1>
+        <div class="sub-title">حبيبة… 🤍✨</div>
+        <div class="text-content">
+            <p>
+                وجودك في حياتي مش حاجة عادية، ده أجمل جزء في يومي. 💫
+                كل مرة بكلمك فيها بحس إن الدنيا أهدى وقلبي مطمَن. 🕊
+                أنا فخور بيكي، وبكل تفصيلة فيكي، وبحبك زي ما إنتي . 💖
+                ربنا يحفظك لقلبي ويخليكي ليا يا نور عيني 🫶🏻💖
+                يا أجمل قدر في حياتي. 💌✨
+            </p>
+        </div>
+        <button class="button restart-button" onclick="restartApp()">Restart</button>
+    </div>
+</div>
+
+<script>
+    const CORRECT_PASSWORD = "522007";
+    const screens = document.querySelectorAll('.screen');
+    const music = document.getElementById('background-music');
+    let musicPlayed = false;
+
+    function tryPlayMusic() {
+        if (!musicPlayed) {
+            music.play().then(() => {
+                musicPlayed = true;
+            }).catch(e => {
+                console.log("Music play delayed until user interaction:", e);
+            });
+        }
+    }
+
+    function stopMusic() {
+        music.pause();
+        music.currentTime = 0;
+    }
+
+    function showScreen(screenId) {
+        screens.forEach(screen => screen.classList.remove('active'));
+        const target = document.getElementById(screenId);
+        target.classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        if (screenId === 'memories-screen') {
+            document.querySelectorAll('.memory-card').forEach((card, i) => {
+                card.style.opacity = 0;
+                card.style.transform = 'translateY(50px)';
+                void card.offsetWidth;
+                card.style.animation = `floatUp 0.8s ${0.1 * (i + 1)}s forwards`;
+            });
+            tryPlayMusic();
+        } else if (screenId === 'final-screen' || screenId === 'lock-screen') {
+            stopMusic();
+        }
+    }
+
+    function checkPassword() {
+        const input = document.getElementById('password-input').value.trim();
+        const error = document.getElementById('error-message');
+        if (input === CORRECT_PASSWORD) {
+            error.style.display = 'none';
+            document.getElementById('password-input').value = '';
+            showScreen('welcome-screen');
+        } else {
+            error.style.display = 'block';
+        }
+    }
+
+    function showMemoriesScreen() {
+        showScreen('memories-screen');
+    }
+
+    function showFinalScreen() {
+        stopMusic();
+        showScreen('final-screen');
+    }
+
+    function restartApp() {
+        stopMusic();
+        showScreen('lock-screen');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        showScreen('lock-screen');
+        document.getElementById('password-input').addEventListener('keypress', e => {
+            if (e.key === 'Enter') checkPassword();
+        });
+
+        // تفعيل الموسيقى عند أول نقر
+        document.body.addEventListener('click', tryPlayMusic, { once: true });
+    });
+</script>
+
+</body>
+</html>
